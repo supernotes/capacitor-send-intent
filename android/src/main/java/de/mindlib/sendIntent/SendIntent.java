@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.os.Bundle;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -28,17 +29,31 @@ public class SendIntent extends Plugin {
 
     @PluginMethod
     public void checkSendIntentReceived(PluginCall call) {
+        // Log.d("SendIntent", "checkSendIntentReceived called");
         Intent intent = bridge.getActivity().getIntent();
+        handleSendIntent(call, intent);
+    }
+
+    private void handleSendIntent(PluginCall call, Intent intent) {
+        if (intent == null) {
+            call.reject("No intent found");
+            return;
+        }
+
         String action = intent.getAction();
         String type = intent.getType();
+        // Log.d("SendIntent", "Action: " + action + ", Type: " + type);
+
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             call.resolve(readItemAt(intent, type, 0));
         } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
             JSObject ret = readItemAt(intent, type, 0);
-            List additionalItems = new ArrayList<JSObject>();
+            List<JSObject> additionalItems = new ArrayList<>();
 
-            for (int index = 1; index < intent.getClipData().getItemCount(); index++) {
-                additionalItems.add(readItemAt(intent, type, index));
+            if (intent.getClipData() != null) {
+                for (int index = 1; index < intent.getClipData().getItemCount(); index++) {
+                    additionalItems.add(readItemAt(intent, type, index));
+                }
             }
             ret.put("additionalItems", new JSArray(additionalItems));
             call.resolve(ret);
@@ -49,7 +64,18 @@ public class SendIntent extends Plugin {
 
     @PluginMethod
     public void finish(PluginCall call) {
-        bridge.getActivity().finish();
+        Intent intent = bridge.getActivity().getIntent();
+        if (intent != null) {
+            intent.setAction(null);
+            intent.setType(null);
+            intent.setData(null);
+            intent.setClipData(null);
+            intent.replaceExtras((Bundle) null);
+            bridge.getActivity().setIntent(new Intent());  // Create and set a new, empty intent
+            call.resolve();
+        } else {
+            call.reject("No intent to wipe");
+        }
     }
 
     private JSObject readItemAt(Intent intent, String type, int index) {
