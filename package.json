@@ -1,5 +1,5 @@
 {
-  "name": "send-intent",
+  "name": "@supernotes/send-intent",
   "version": "6.0.2",
   "description": "SendIntent",
   "main": "dist/plugin.cjs.js",
@@ -46,20 +46,20 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@capacitor/android": "^6.0.0",
-    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
     "@capacitor/docgen": "^0.2.2",
-    "@capacitor/ios": "^6.0.0",
+    "@capacitor/ios": "^6.1.2",
     "@ionic/eslint-config": "^0.4.0",
     "@ionic/prettier-config": "^1.0.1",
     "@ionic/swiftlint-config": "^1.1.2",
-    "eslint": "^8.57.0",
-    "prettier": "~2.3.0",
+    "eslint": "^8.57.1",
+    "prettier": "~2.3.2",
     "prettier-plugin-java": "~1.0.2",
     "rimraf": "^3.0.2",
-    "rollup": "^2.32.0",
-    "swiftlint": "^1.0.1",
-    "typescript": "~5.5.4"
+    "rollup": "^2.79.2",
+    "swiftlint": "^1.0.2",
+    "typescript": "~5.0.4"
   },
   "peerDependencies": {
     "@capacitor/core": "^6.0.0"
