@@ -4,7 +4,7 @@ export default {
     {
       file: 'dist/plugin.js',
       format: 'iife',
-      name: 'capacitorSendIntent',
+      name: 'supernotesCapacitorSendIntent',
       globals: {
         '@capacitor/core': 'capacitorExports',
       },

@@ -1,6 +1,6 @@
 {
   "name": "@supernotes/send-intent",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "SendIntent",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -13,16 +13,16 @@
     "ios/Sources",
     "ios/Tests",
     "Package.swift",
-    "SendIntent.podspec"
+    "SupernotesSendIntent.podspec"
   ],
   "author": "Carsten Klaffke",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/carsten-klaffke/send-intent.git"
+    "url": "git+https://github.com/supernotes/send-intent.git"
   },
   "bugs": {
-    "url": "https://github.com/carsten-klaffke/send-intent/issues"
+    "url": "https://github.com/supernotes/send-intent/issues"
   },
   "keywords": [
     "capacitor",
@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",
-    "verify:ios": "xcodebuild -scheme SendIntent -destination generic/platform=iOS",
+    "verify:ios": "xcodebuild -scheme SupernotesSendIntent -destination generic/platform=iOS",
     "verify:android": "cd android && ./gradlew clean build test && cd ..",
     "verify:web": "npm run build",
     "lint": "npm run eslint && npm run prettier -- --check && npm run swiftlint -- lint",
