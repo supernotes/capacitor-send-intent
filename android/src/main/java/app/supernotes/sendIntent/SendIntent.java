@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.OpenableColumns;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -103,14 +102,41 @@ public class SendIntent extends Plugin {
     }
 
     public String readFileName(Uri uri) {
-        Cursor returnCursor = getContext().getContentResolver().query(uri, null, null, null, null);
-        /*
-         * Get the column indexes of the data in the Cursor,
-         * move to the first row in the Cursor, get the data,
-         * and display it.
-         */
-        returnCursor.moveToFirst();
-        return returnCursor.getString(returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+        final String[] projection = { OpenableColumns.DISPLAY_NAME };
+        Cursor cursor = null;
+        try {
+            cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                if (nameIndex != -1) {
+                    return cursor.getString(nameIndex);
+                } else {
+                    // Fallback to URI extraction if column missing
+                    return getFallbackFileName(uri);
+                }
+            } else {
+                return "unnamed_file_" + System.currentTimeMillis();
+            }
+        } catch (SecurityException e) {
+            // Log.e("SendIntent", "Permission error accessing URI", e);
+            return "secured_file";
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    private String getFallbackFileName(Uri uri) {
+        String path = uri.getPath();
+        if (path != null) {
+            int cut = path.lastIndexOf('/');
+            if (cut != -1) {
+                return path.substring(cut + 1);
+            }
+        }
+        return "shared_file_" + System.currentTimeMillis();
     }
 
     Uri copyfile(Uri uri) {
