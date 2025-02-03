@@ -24,6 +24,12 @@ import org.apache.commons.io.IOUtils;
 @CapacitorPlugin
 public class SendIntent extends Plugin {
 
+    @Override
+    protected void handleOnNewIntent(Intent intent) {
+        super.handleOnNewIntent(intent);
+        bridge.getActivity().setIntent(intent);
+    }
+
     @PluginMethod
     public void checkSendIntentReceived(PluginCall call) {
         // Log.d("SendIntent", "checkSendIntentReceived called");
@@ -36,24 +42,27 @@ public class SendIntent extends Plugin {
             call.reject("No intent found");
             return;
         }
-
         String action = intent.getAction();
         String type = intent.getType();
         // Log.d("SendIntent", "Action: " + action + ", Type: " + type);
-
         if (Intent.ACTION_SEND.equals(action) && type != null) {
-            call.resolve(readItemAt(intent, type, 0));
+            JSObject result = readItemAt(intent, type, 0);
+            call.resolve(result);
+            // immediately clear intent after processing
+            bridge.getActivity().setIntent(new Intent());
         } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-            JSObject ret = readItemAt(intent, type, 0);
+            JSObject result = readItemAt(intent, type, 0);
             List<JSObject> additionalItems = new ArrayList<>();
-
+            // if there are multiple share items, concatenate them into an array
             if (intent.getClipData() != null) {
                 for (int index = 1; index < intent.getClipData().getItemCount(); index++) {
                     additionalItems.add(readItemAt(intent, type, index));
                 }
             }
-            ret.put("additionalItems", new JSArray(additionalItems));
-            call.resolve(ret);
+            result.put("additionalItems", new JSArray(additionalItems));
+            call.resolve(result);
+            // immediately clear intent after processing
+            bridge.getActivity().setIntent(new Intent());
         } else {
             call.reject("No processing needed");
         }
@@ -61,22 +70,13 @@ public class SendIntent extends Plugin {
 
     @PluginMethod
     public void finish(PluginCall call) {
-        Intent intent = bridge.getActivity().getIntent();
-        if (intent != null) {
-            intent.setAction(null);
-            intent.setType(null);
-            intent.setData(null);
-            intent.setClipData(null);
-            intent.replaceExtras((Bundle) null);
-            bridge.getActivity().setIntent(new Intent()); // Create and set a new, empty intent
-            call.resolve();
-        } else {
-            call.reject("No intent to wipe");
-        }
+        // wipe intent regardless of whether there was one and return OK
+        bridge.getActivity().setIntent(new Intent());
+        call.resolve();
     }
 
     private JSObject readItemAt(Intent intent, String type, int index) {
-        JSObject ret = new JSObject();
+        JSObject result = new JSObject();
         String title = intent.getStringExtra(Intent.EXTRA_SUBJECT);
         Uri uri = null;
 
@@ -84,24 +84,22 @@ public class SendIntent extends Plugin {
             intent.getClipData().getItemAt(index).getUri();
 
         String url = null;
-
-        //Handling web links as url
+        // handling web links as url
         if ("text/plain".equals(type) && intent.getStringExtra(Intent.EXTRA_TEXT) != null) {
             url = intent.getStringExtra(Intent.EXTRA_TEXT);
         }
-        //Handling files as url
+        // handling files as url
         else if (uri != null) {
             final Uri copyfileUri = copyfile(uri);
             url = (copyfileUri != null) ? copyfileUri.toString() : null;
         }
-
         if (title == null && uri != null) title = readFileName(uri);
 
-        ret.put("title", title);
-        ret.put("description", null);
-        ret.put("type", type);
-        ret.put("url", url);
-        return ret;
+        result.put("title", title);
+        result.put("description", null);
+        result.put("type", type);
+        result.put("url", url);
+        return result;
     }
 
     public String readFileName(Uri uri) {
