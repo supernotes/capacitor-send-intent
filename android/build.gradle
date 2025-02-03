@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-    namespace "de.mindlib.sendIntent.sendintent"
+    namespace "app.supernotes.sendIntent.sendintent"
     compileSdkVersion 34
     defaultConfig {
         minSdkVersion 21

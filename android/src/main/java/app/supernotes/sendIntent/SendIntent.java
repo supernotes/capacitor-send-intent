@@ -1,21 +1,17 @@
-package de.mindlib.sendIntent;
+package app.supernotes.sendIntent;
 
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.OpenableColumns;
 import android.os.Bundle;
-
+import android.provider.OpenableColumns;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
-
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,8 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.io.IOUtils;
 
-@CapacitorPlugin()
+@CapacitorPlugin
 public class SendIntent extends Plugin {
 
     @PluginMethod
@@ -71,7 +68,7 @@ public class SendIntent extends Plugin {
             intent.setData(null);
             intent.setClipData(null);
             intent.replaceExtras((Bundle) null);
-            bridge.getActivity().setIntent(new Intent());  // Create and set a new, empty intent
+            bridge.getActivity().setIntent(new Intent()); // Create and set a new, empty intent
             call.resolve();
         } else {
             call.reject("No intent to wipe");
@@ -83,8 +80,8 @@ public class SendIntent extends Plugin {
         String title = intent.getStringExtra(Intent.EXTRA_SUBJECT);
         Uri uri = null;
 
-        if (intent.getClipData() != null && intent.getClipData().getItemAt(index) != null)
-            uri = intent.getClipData().getItemAt(index).getUri();
+        if (intent.getClipData() != null && intent.getClipData().getItemAt(index) != null) uri =
+            intent.getClipData().getItemAt(index).getUri();
 
         String url = null;
 
@@ -98,8 +95,7 @@ public class SendIntent extends Plugin {
             url = (copyfileUri != null) ? copyfileUri.toString() : null;
         }
 
-        if (title == null && uri != null)
-            title = readFileName(uri);
+        if (title == null && uri != null) title = readFileName(uri);
 
         ret.put("title", title);
         ret.put("description", null);
@@ -109,8 +105,7 @@ public class SendIntent extends Plugin {
     }
 
     public String readFileName(Uri uri) {
-        Cursor returnCursor =
-                getContext().getContentResolver().query(uri, null, null, null, null);
+        Cursor returnCursor = getContext().getContentResolver().query(uri, null, null, null, null);
         /*
          * Get the column indexes of the data in the Cursor,
          * move to the first row in the Cursor, get the data,
@@ -124,8 +119,10 @@ public class SendIntent extends Plugin {
         final String fileName = readFileName(uri);
         File file = new File(getContext().getFilesDir(), fileName);
 
-        try (FileOutputStream outputStream = getContext().openFileOutput(fileName, Context.MODE_PRIVATE);
-             InputStream inputStream = getContext().getContentResolver().openInputStream(uri)) {
+        try (
+            FileOutputStream outputStream = getContext().openFileOutput(fileName, Context.MODE_PRIVATE);
+            InputStream inputStream = getContext().getContentResolver().openInputStream(uri)
+        ) {
             IOUtils.copy(inputStream, outputStream);
             return Uri.fromFile(file);
         } catch (FileNotFoundException fileNotFoundException) {
@@ -135,5 +132,4 @@ public class SendIntent extends Plugin {
         }
         return null;
     }
-
 }

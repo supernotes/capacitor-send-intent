@@ -1,7 +1,6 @@
-package de.mindlib.sendIntent;
+package app.supernotes.sendIntent;
 
 import android.os.Bundle;
-
 import com.getcapacitor.BridgeActivity;
 
 public class SendIntentActivity extends BridgeActivity {

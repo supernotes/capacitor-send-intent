@@ -1,17 +1,11 @@
-# Send-Intent
+# capacitor-send-intent
 
-This is a Capacitor plugin meant to be used in Ionic applications for checking if your App was targeted as a share goal. It supports both Android and iOS and is able to handle a single file or multiple files of any type.
-
-Check out my app [mindlib - your personal mind library](https://play.google.com/store/apps/details?id=de.mindlib) to see it in action.
-
-## Projects below Capacitor 3
-
-For projects below Capacitor 3 please use "send-intent": "1.1.7"!
+This is a Capacitor plugin for checking if your App was targeted as a share goal. It supports both Android and iOS and is able to handle a single file or multiple files of any type.
 
 ## Installation
 
 ```
-npm install send-intent
+npm install @supernotes/capacitor-send-intent
 npx cap sync
 ```
 
@@ -42,7 +36,7 @@ SendIntent.checkSendIntentReceived().then((result: any) => {
 }).catch(err => console.error(err));
 ```
 
-## **Android**
+## Android
 
 Configure a new activity in AndroidManifest.xml!
 
@@ -57,10 +51,10 @@ Configure a new activity in AndroidManifest.xml!
 
 <!-- Add new One Activity for handle Intent here -->
 <activity
-        android:name="de.mindlib.sendIntent.SendIntentActivity" <!-- Do not change this name, otherwise your application will crash -->
-        android:label="@string/app_name"
-        android:exported="true"
-        android:theme="@style/AppTheme.NoActionBar">
+    android:name="app.supernotes.sendIntent.SendIntentActivity"
+    android:label="@string/app_name"
+    android:exported="true"
+    android:theme="@style/AppTheme.NoActionBar">
     <intent-filter>
         <action android:name="android.intent.action.SEND" />
         <category android:name="android.intent.category.DEFAULT" />
@@ -72,26 +66,15 @@ Configure a new activity in AndroidManifest.xml!
         <data android:mimeType="video/*" />
     </intent-filter>
 </activity>
-
 ```
 
-On Android, I strongly recommend closing the send-intent-activity after you have processed the send-intent in your app. Not doing 
-this can lead to app state issues (because you have two instances running) or trigger the same intent again if your app 
-reloads from idle mode. You can close the send-intent-activity by calling the "finish"-method:
-
-```js
-SendIntent.finish();
-```
-
-However, if you want to stay in your app after the send-intent, there is a solution using Deep Links which was worked out here: https://github.com/carsten-klaffke/send-intent/issues/69#issuecomment-1544619608
-
-## **iOS**
+## iOS
 
 Create a "Share Extension" ([Creating an App extension](https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/ExtensionCreation.html#//apple_ref/doc/uid/TP40014214-CH5-SW1)) and make sure that the extensions "iOS deployment target" version is in sync with your apps deployment target version! 
 
 Set the activation rules in the extensions Info.plist, so that your app will be displayed as share option!
 
-```
+```xml
 ...
     <key>NSExtensionActivationRule</key>
     <dict>
@@ -116,12 +99,7 @@ Set the activation rules in the extensions Info.plist, so that your app will be 
 Code for the ShareViewController:
 
 ```swift
-//
 //  ShareViewController.swift
-//  mindlib
-//
-//  Created by Carsten Klaffke on 05.07.20.
-//
 
 import MobileCoreServices
 import Social
@@ -386,19 +364,4 @@ window.addEventListener("sendIntentReceived", () => {
     });
 })
 ```
-
-You should also exceute a call on app startup as described in [Usage](#usage), because on a cold start the event-listener might not be registered early enough (see [https://github.com/carsten-klaffke/send-intent/issues/57]).
-
-## Donation
-
-If you want to support my work, you can donate me via Lightning (Bitcoin) or Stripe.
-
-Lightning: mostroll13@walletofsatoshi.com
-
-[Donate me a coffee on Stripe](https://buy.stripe.com/5kA9EH5SAe778VO146)
-
-## Consulting
-
-I work as a freelance IT Consultant. If you need help with this plugin or want me to do the complete setup in your App, you can contact me at mail@carsten-klaffke.de.
-
 

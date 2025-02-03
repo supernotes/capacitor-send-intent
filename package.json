@@ -1,7 +1,7 @@
 {
-  "name": "@supernotes/send-intent",
+  "name": "@supernotes/capacitor-send-intent",
   "version": "6.0.3",
-  "description": "SendIntent",
+  "description": "Capacitor plugin to handle incoming share intents",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -13,16 +13,19 @@
     "ios/Sources",
     "ios/Tests",
     "Package.swift",
-    "SupernotesSendIntent.podspec"
+    "SupernotesCapacitorSendIntent.podspec"
+  ],
+  "maintainers": [
+    "Supernotes"
   ],
   "author": "Carsten Klaffke",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/supernotes/send-intent.git"
+    "url": "git+https://github.com/supernotes/capacitor-send-intent.git"
   },
   "bugs": {
-    "url": "https://github.com/supernotes/send-intent/issues"
+    "url": "https://github.com/supernotes/capacitor-send-intent/issues"
   },
   "keywords": [
     "capacitor",
@@ -31,7 +34,7 @@
   ],
   "scripts": {
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",
-    "verify:ios": "xcodebuild -scheme SupernotesSendIntent -destination generic/platform=iOS",
+    "verify:ios": "xcodebuild -scheme SupernotesCapacitorSendIntent -destination generic/platform=iOS",
     "verify:android": "cd android && ./gradlew clean build test && cd ..",
     "verify:web": "npm run build",
     "lint": "npm run eslint && npm run prettier -- --check && npm run swiftlint -- lint",
@@ -56,7 +59,7 @@
     "eslint": "^8.57.1",
     "prettier": "~2.3.2",
     "prettier-plugin-java": "~1.0.2",
-    "rimraf": "^3.0.2",
+    "rimraf": "^6.0.1",
     "rollup": "^2.79.2",
     "swiftlint": "^1.0.2",
     "typescript": "~5.0.4"
