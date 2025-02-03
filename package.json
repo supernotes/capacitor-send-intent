@@ -1,6 +1,6 @@
 {
   "name": "@supernotes/capacitor-send-intent",
-  "version": "6.0.3",
+  "version": "6.1.0",
   "description": "Capacitor plugin to handle incoming share intents",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
