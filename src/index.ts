@@ -1,9 +1,10 @@
-import { registerPlugin } from "@capacitor/core";
-import type { SendIntentPlugin } from "./definitions";
+import { registerPlugin } from '@capacitor/core';
 
-const SendIntent = registerPlugin<SendIntentPlugin>("SendIntent", {
-  web: () => import("./web").then((m) => new m.SendIntentWeb()),
+import type { SendIntentPlugin } from './definitions';
+
+const SendIntent = registerPlugin<SendIntentPlugin>('SendIntent', {
+  web: () => import('./web').then(m => new m.SendIntentWeb()),
 });
 
-export * from "./definitions";
+export * from './definitions';
 export { SendIntent };
